@@ -3,7 +3,7 @@ import { runCohort, compare, sensitivity, simulatePersona } from '../src/simulat
 import { TRAITS, TRAIT_LABELS } from '../src/persona.js';
 import { formatP } from '../src/stats.js';
 import { reasonLabel } from '../src/reasons.js';
-import { drawFlow } from './flow.js';
+import { drawFlow } from './flow.js?v=2';
 
 // muted print colours, one per segment
 const SEGMENT_COLORS = ['#c4901d', '#2f6f73', '#7d3c6b', '#707c2a', '#4a5a8a'];
