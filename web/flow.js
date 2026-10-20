@@ -38,10 +38,11 @@ export function drawFlow(canvas, { scenario, lanes, colors }) {
   const gateX = stages.map((_, i) => left + ((right - left) * (i + 0.5)) / stages.length);
   const endX = right + 40;
 
-  const text = cssVar('--text');
-  const muted = cssVar('--muted');
-  const line = cssVar('--line');
-  const good = cssVar('--good');
+  const ink = cssVar('--ink');
+  const soft = cssVar('--ink-soft');
+  const rule = cssVar('--rule');
+  const red = cssVar('--red');
+  const mono = (size, weight = 400) => `${weight} ${size}px 'IBM Plex Mono', ui-monospace, monospace`;
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const narrow = width < 560;
@@ -77,7 +78,6 @@ export function drawFlow(canvas, { scenario, lanes, colors }) {
         pileY: pileBottom - row * PILE_GAP,
         converted: j.converted,
         x: 0,
-        fallT: 0,
       });
     }
   });
@@ -94,10 +94,10 @@ export function drawFlow(canvas, { scenario, lanes, colors }) {
       const y0 = top + laneH * li;
       if (lanes.length > 1) {
         ctx.fillStyle = lane.color;
-        ctx.font = '600 12px Inter, system-ui, sans-serif';
-        ctx.fillText(lane.name, 12, y0 + laneH / 2 + 4);
+        ctx.font = "italic 500 26px 'Newsreader', Georgia, serif";
+        ctx.fillText(lane.name, 8, y0 + laneH / 2 + 8);
         if (li > 0) {
-          ctx.strokeStyle = line;
+          ctx.strokeStyle = rule;
           ctx.setLineDash([4, 6]);
           ctx.beginPath();
           ctx.moveTo(0, y0);
@@ -108,29 +108,34 @@ export function drawFlow(canvas, { scenario, lanes, colors }) {
       }
       stages.forEach((s, si) => {
         const rate = lane.result.funnel[si + 1].rate;
-        ctx.fillStyle = muted;
-        ctx.font = '11px Inter, system-ui, sans-serif';
+        const lost = lane.result.funnel[si].rate - rate;
+        ctx.fillStyle = soft;
+        ctx.font = mono(11);
         ctx.textAlign = 'center';
-        ctx.fillText(`${Math.round(rate * 100)}%`, gateX[si], y0 + laneH - 8);
+        ctx.fillText(`−${Math.round(lost * 100)}%`, gateX[si], y0 + laneH - 8);
       });
       ctx.textAlign = 'left';
     });
 
-    ctx.strokeStyle = line;
+    ctx.strokeStyle = rule;
     ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
     stages.forEach((s, si) => {
       ctx.beginPath();
-      ctx.moveTo(gateX[si], top - 6);
-      ctx.lineTo(gateX[si], height - 8);
+      ctx.moveTo(gateX[si] + 0.5, top - 6);
+      ctx.lineTo(gateX[si] + 0.5, height - 22);
       ctx.stroke();
-      ctx.fillStyle = text;
-      ctx.font = '600 11.5px Inter, system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      const label = narrow ? `${si + 1}` : s.label;
+    });
+    ctx.setLineDash([]);
+    ctx.textAlign = 'center';
+    ctx.font = mono(11, 500);
+    stages.forEach((s, si) => {
+      ctx.fillStyle = ink;
+      const label = narrow ? `${si + 1}` : s.label.toLowerCase();
       ctx.fillText(label, gateX[si], 18);
     });
-    ctx.fillStyle = good;
-    ctx.fillText(narrow ? '✓' : 'Converted', endX, 18);
+    ctx.fillStyle = red;
+    ctx.fillText(narrow ? 'done' : 'bought', endX, 18);
     ctx.textAlign = 'left';
 
     // dots
@@ -147,7 +152,7 @@ export function drawFlow(canvas, { scenario, lanes, colors }) {
         const ease = fall * fall;
         x = d.stopX + (d.pileX - d.stopX) * fall;
         y = d.y + (d.pileY - d.y) * ease;
-        alpha = d.converted ? 0.95 : 0.9 - 0.45 * fall;
+        alpha = d.converted ? 1 : 0.9 - 0.5 * fall;
       }
       ctx.globalAlpha = alpha;
       ctx.fillStyle = d.color;

@@ -1,87 +1,91 @@
 # SayDo Lab
 
-**Synthetic crowds that show the gap between what people *say* and what they actually *do*.**
+People say one thing and do another. Ask a group of shoppers whether they'd buy
+something at $89 and most of them will say yes. Put the same people through a
+real checkout and a lot of those yeses quietly disappear somewhere between the
+cart and the payment page.
 
-Ask 2,000 shoppers whether they'd buy your product and two thirds say yes. Put
-the same 2,000 people through your real checkout and fewer than half of those
-"yes" answers turn into orders. Surveys can't see the friction, the surprise
-fees, the slow pages, or the moment someone just gets bored.
+This project simulates both halves of that. A crowd of made-up people answers
+a survey question, then walks through an actual funnel one step at a time. You
+can see how many of them break their word, where it happens, and which design
+change would have kept them.
 
-SayDo Lab simulates both sides. Every synthetic persona answers your survey,
-then walks your actual funnel step by step and thinks out loud as they go. You
-see *how many* people break their promise, *where*, *why*, and *which design
-change* would keep them.
+Live version: https://berkayacer13.github.io/saydo-lab/
 
-**▶ [Live demo](https://berkayacer13.github.io/saydo-lab/)**: runs entirely in the browser, no install.
+![Flight booking, variant A vs. B](docs/screenshot.png)
 
-![SayDo Lab A/B test on a flight booking funnel](docs/screenshot-ab.png)
+## The idea
 
----
+Surveys only see the headline. They don't see the $9 shipping fee that shows
+up at checkout, the 14-field passenger form on a phone, or the countdown timer
+that makes a careful person close the tab. People also like giving the nice
+answer.
 
-## What you can do with it
+So each simulated person here has two models:
 
-- **Measure the say-do gap.** Each persona answers a survey ("Would you book this
-  flight for $240?") and then actually goes through the booking flow. The
-  *Said vs. did* matrix shows who kept their word, who broke it, and who said
-  no but bought anyway.
-- **See why people leave.** Every drop-off is attributed to the force that
-  pushed hardest at that moment: *surprise shipping fee*, *too many form fields*,
-  *pressure tactics backfired*, *clickbait put them off*...
-- **Run paired A/B tests on the same people.** The same synthetic crowd sees both
-  variants with identical random draws, so differences come from the design
-  change and not from noise. Significance comes from McNemar's test on the
-  personas whose outcome flipped.
-- **Find what moves the needle.** A sensitivity sweep ranks every design lever by
-  impact. Click any row to try its best setting as Variant B.
-- **Meet the crowd.** Open any persona to see their traits, their survey
-  answer, and their inner monologue at every step. In A/B mode you see the same
-  person living through both variants side by side.
+- a **survey model**, which looks at the price, their willingness to pay, how
+  much they actually need the thing, and how much they like saying what
+  sounds good
+- a **behaviour model**, which takes them through every step of the funnel.
+  At each step a handful of forces (price, hidden fees, form length, trust,
+  urgency, page speed and so on) push them forward or back
 
-![Persona inspector: the same person in two variants](docs/personas.png)
+The difference between those two is the say-do gap. With the default settings
+it comes out at about 54% for the shoe store, 52% for the flight and 90% for
+the news subscription. Nobody types those numbers in; they fall out of the
+model. The news one is meant to be extreme. "I'd pay for good journalism" is
+probably the most famous broken promise on the internet.
 
-## Scenarios
+## What's in the app
 
-| Scenario | Sector | Funnel | Levers |
-| --- | --- | --- | --- |
-| **Checkout funnel** | E-commerce | Landing → Product → Cart → Checkout → Payment | price, shipping fee & when it's shown, reviews, trust badges, countdown timer, guest checkout, form length, load time |
-| **Flight booking** | Aviation | Results → Select → Passengers → Extras → Payment | fare, bag fee & when it's shown, free cancellation, pre-ticked insurance, fare jump at payment, form length, search speed |
-| **News subscription** | Media | Headline → Article → Paywall → Offer → Subscribe | clickbait level, price, free articles, trial length, ad density, load time |
+- **Three funnels:** an online shoe store checkout, a flight booking (Istanbul
+  to Lisbon) and a news site paywall. Each has its own five kinds of people,
+  e.g. Bargain Hunter, Family Planner, Media Skeptic.
+- **Levers** for whatever you'd normally argue about in a meeting: price, when
+  the shipping or bag fee is shown, guest checkout, form length, trust badges,
+  countdown timers, pre-ticked insurance, clickbait level, trial length...
+- **A/B mode.** The same people go through both versions with the same random
+  numbers, so a difference can only come from the change you made. The
+  significance test is McNemar's, run on the people whose outcome flipped.
+- **Why they left.** Every drop-off is blamed on whatever was pushing hardest
+  at that moment.
+- **Which lever matters.** Each lever gets pushed to both of its extremes and
+  ranked by how much it moves conversion. Click a row to try the best setting
+  as variant B.
+- **Case files.** Open any person and read what went through their head at
+  each step, side by side for A and B.
 
-Each scenario has its own population of 5 segments (e.g. *Bargain Hunter*,
-*Family Planner*, *Media Skeptic*) built from 8 psychographic traits.
+![A case file: the same person in both variants](docs/case-file.png)
 
-Some of the trade-offs the model brings out:
+Some things that came out of playing with it:
 
-- Hiding the shipping fee doesn't change survey answers at all (the survey
-  never mentions it), but it widens the say-do gap at checkout.
-- A countdown timer barely moves total conversion. It wins impulse buyers and
-  scares off cautious ones, and the segment table shows which group you lose.
-- Clickbait gets more clicks but fewer subscribers. Curiosity pulls people in,
-  and then credibility and disappointment cost you the conversion.
-- Removing friction never hurts anyone. In the paired test, cutting form fields
-  converts extra people and loses zero.
+- Hiding the shipping fee doesn't change a single survey answer (the survey
+  never mentions it), but the say-do gap goes up.
+- A countdown timer does almost nothing to overall conversion. It wins
+  impulse buyers and loses careful ones, and those two roughly cancel out.
+- Clickbait gets more clicks and fewer subscribers.
+- Cutting form fields never loses anyone. In paired runs, the people it
+  affects only ever move from "left" to "bought".
 
-## Quick start
+## Running it
 
-Requires Node.js 18+. **No dependencies.**
+Needs Node 18 or newer. There are no dependencies to install.
 
 ```bash
 git clone https://github.com/Berkayacer13/saydo-lab.git
 cd saydo-lab
-npm start            # http://localhost:5173
-npm test             # 14 tests, < 1s
+npm start        # http://localhost:5173
+npm test
 ```
 
-### Command line
-
-The same engine runs in the terminal:
+There's also a command line version that uses the same engine:
 
 ```bash
-node cli/saydo.js checkout                         # full report
-node cli/saydo.js checkout --list                  # show levers
+node cli/saydo.js checkout
+node cli/saydo.js checkout --list
 node cli/saydo.js flight --compare "bagReveal=upfront,preTicked=false"
 node cli/saydo.js paywall --sensitivity
-node cli/saydo.js checkout --persona 12            # one persona's inner monologue
+node cli/saydo.js checkout --persona 12
 node cli/saydo.js checkout --set price=79 --n 5000 --seed 7 --json
 ```
 
@@ -91,96 +95,47 @@ Paired A/B result  (same personas saw both variants)
   173 personas converted only with B, 22 only with A.
 ```
 
-```
-What moves the needle?  base conversion 6.8%
-  Monthly price                3.1% @ 19.99      22.6% @ 1.99      span 19.5 pts
-  Headline clickbait level     4.0% @ 1           9.5% @ 0         span 5.5 pts
-  Free trial (days)            6.8% @ 0          11.3% @ 30        span 4.5 pts
-  Ad density                   4.5% @ 1           8.8% @ 0         span 4.3 pts
-```
-
-### Deep links
-
-The web app reads its setup from the URL hash, so you can share a specific experiment:
+The web app reads its setup from the URL, so you can link to an experiment:
 
 ```
-/#flight
-/#checkout&b.guestCheckout=true&b.shippingReveal=upfront
-/#paywall&b.clickbait=0&b.trialDays=14
+#flight
+#checkout&b.guestCheckout=true&b.shippingReveal=upfront
+#paywall&b.clickbait=0&b.trialDays=14
 ```
 
-## How it works
+## Code
 
 ```
-  segments ──► crowd of personas ──┬──► survey model ──► "Would you buy?"  (SAY)
-                                   │
-                                   └──► funnel model ──► stage by stage     (DO)
-                                                           ├─ forces → logit → P(continue)
-                                                           ├─ friction → fatigue pool
-                                                           └─ exit reason + inner monologue
+src/            the simulation itself, plain ES modules
+  rng.js        seeded random numbers
+  persona.js    traits and crowd generation
+  scenarios.js  the three funnels: levers, segments, survey and step forces
+  simulate.js   journeys, cohorts, paired A/B, sensitivity sweep
+  reasons.js    drop-off reasons and the inner monologue lines
+  stats.js      Wilson interval, z-test, McNemar
+web/            the page (no framework, the crowd is drawn on a canvas)
+cli/saydo.js    command line version
+test/           node:test suite
 ```
 
-1. **Personas** are drawn from segment trait distributions, each with a
-   willingness to pay, a real underlying need (motivation) and a device.
-2. **The survey model** sees only the headline price, plus a social-desirability
-   bias. That is why it over-predicts.
-3. **The funnel model** evaluates signed *forces* at every stage (price vs. WTP,
-   hidden fees, form length, trust, urgency, clickbait...). Friction builds up
-   into fatigue that weighs on later steps.
-4. **Common random numbers** give every persona a private random stream, so
-   A/B tests are paired and the McNemar test applies.
+The same `src/` files run in the browser and in Node. To add a funnel, add an
+object to `src/scenarios.js` with its steps, levers and segments. The page, the
+CLI and the tests pick it up from there.
 
-The full write-up, with formulas, is in **[docs/MODEL.md](docs/MODEL.md)**.
+How the maths works, with formulas: [docs/MODEL.md](docs/MODEL.md).
 
-## Project structure
+## Caveats
 
-```
-src/                 simulation engine (pure ES modules, shared by browser + CLI)
-  rng.js             seeded PRNG, hashing, normal draws
-  persona.js         trait model and crowd generation
-  scenarios.js       funnels, levers, segments, survey and stage force models
-  simulate.js        journeys, cohorts, paired A/B, sensitivity analysis
-  reasons.js         exit-reason labels and think-aloud monologue templates
-  stats.js           Wilson CI, two-proportion z-test, McNemar
-web/                 dashboard UI (vanilla JS, canvas crowd animation)
-cli/saydo.js         terminal interface
-test/                node:test suite (behavioural sanity + statistics)
-docs/MODEL.md        model documentation
-```
+The coefficients are hand-tuned to give believable numbers. They are not
+fitted to real data. Treat the output as a way to reason about *why* intent and
+behaviour drift apart, not as a forecast for your store. The obvious next steps
+would be:
 
-## Adding a scenario
-
-A scenario is a plain object in `src/scenarios.js`:
-
-```js
-{
-  id: 'b2b-demo', sector: 'B2B', name: 'Demo request',
-  referencePrice: 1200, currency: '$', priceOf: (L) => L.price,
-  surveyQuestion: (L) => `Would you book a demo at $${L.price}/seat?`,
-  segments: [ /* 5 segments with trait means */ ],
-  levers:   [ /* range | toggle | select */ ],
-  survey(p, L) { /* logit of saying yes */ },
-  stages: [
-    { id: 'pricing', label: 'Pricing page', base: 1.2,
-      forces: (p, L) => [ f('price', ...), f('form', ..., true /* friction */) ] },
-    // ...
-  ],
-}
-```
-
-The UI, CLI, A/B tests and sensitivity analysis all pick it up automatically.
-
-## Roadmap
-
-- **Calibrate against real data.** Fit segment traits and force weights to
-  funnel analytics plus a stated-intent panel, then validate the simulated
-  say-do gap on held-out campaigns.
-- **LLM-voiced personas.** Swap template monologues for model-generated
-  reasoning, keeping the numeric force model as the controller.
-- **Creative testing.** Let personas react to actual ad images, headlines and
-  landing page screenshots.
-- **More sectors.** Retail store layouts, B2B buying committees with several
-  decision-makers.
+- fit the traits and force weights to real funnel analytics plus a survey panel
+- let a language model write the inner monologue, with the numeric model
+  still deciding what happens
+- have people react to actual ad creatives and page screenshots
+- add a B2B scenario where several people have to agree before anyone buys
 
 ## License
 
