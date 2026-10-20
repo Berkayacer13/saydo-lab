@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SayDo Lab</title>
+    <meta name="description" content="Synthetic crowds that reveal the gap between what people say and what they actually do." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='11' cy='16' r='8' fill='%237c6cff'/><circle cx='21' cy='16' r='8' fill='%2322d3b6' fill-opacity='.85'/></svg>" />
+    <link rel="stylesheet" href="web/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="11" cy="16" r="8" fill="var(--say)" />
+          <circle cx="21" cy="16" r="8" fill="var(--do)" fill-opacity=".85" />
+        </svg>
+        <div>
+          <h1>SayDo Lab</h1>
+          <p class="tagline">Synthetic crowds. Real behaviour, not stated intent.</p>
+        </div>
+      </div>
+      <nav class="top-actions">
+        <a class="ghost-btn" href="https://github.com/Berkayacer13/saydo-lab/blob/main/docs/MODEL.md" target="_blank" rel="noopener">How the model works</a>
+      </nav>
+    </header>
+
+    <main class="layout">
+      <aside class="panel controls" aria-label="Simulation controls">
+        <section>
+          <h2 class="eyebrow">Scenario</h2>
+          <div id="scenario-tabs" class="scenario-tabs" role="tablist"></div>
+          <p id="scenario-blurb" class="blurb"></p>
+        </section>
+
+        <section>
+          <div class="row-between">
+            <h2 class="eyebrow">Design levers</h2>
+            <label class="switch small">
+              <input id="compare-toggle" type="checkbox" />
+              <span class="track"><span class="thumb"></span></span>
+              <span>A/B test</span>
+            </label>
+          </div>
+          <div id="variant-tabs" class="variant-tabs" hidden>
+            <button data-variant="A" class="variant-tab active">Variant A</button>
+            <button data-variant="B" class="variant-tab">Variant B</button>
+            <button id="copy-ab" class="link-btn" title="Copy A's levers into B">copy A → B</button>
+          </div>
+          <div id="levers" class="levers"></div>
+        </section>
+
+        <section class="crowd-settings">
+          <h2 class="eyebrow">Crowd</h2>
+          <div class="inline-fields">
+            <label>Size
+              <select id="crowd-size">
+                <option value="500">500</option>
+                <option value="1000">1,000</option>
+                <option value="2000" selected>2,000</option>
+                <option value="5000">5,000</option>
+              </select>
+            </label>
+            <label>Seed
+              <input id="seed" type="number" value="42" min="0" step="1" />
+            </label>
+          </div>
+          <div class="button-row">
+            <button id="run" class="primary-btn">Re-run simulation</button>
+            <button id="reset" class="ghost-btn">Reset</button>
+          </div>
+        </section>
+      </aside>
+
+      <section class="results">
+        <div id="insight" class="insight"></div>
+
+        <div id="kpis" class="kpis"></div>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>The crowd, walking your funnel</h3>
+            <div class="legend" id="segment-legend"></div>
+          </header>
+          <canvas id="flow" height="260" aria-label="Animated crowd flowing through the funnel"></canvas>
+        </article>
+
+        <div class="grid-2">
+          <article class="card">
+            <header class="card-head"><h3>Funnel</h3><span class="hint">share of crowd reaching each step</span></header>
+            <div id="funnel"></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>Said vs. did</h3><span class="hint">survey answer × real behaviour</span></header>
+            <div id="matrix"></div>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <header class="card-head"><h3>Why they left</h3><span class="hint">dominant force at the moment of exit</span></header>
+            <div id="reasons"></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>Segments</h3><span class="hint">who over-promises the most?</span></header>
+            <div id="segments"></div>
+          </article>
+        </div>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>What moves the needle?</h3>
+            <span class="hint">each lever pushed to both extremes. Click a row to test its best setting as Variant B.</span>
+          </header>
+          <div id="sensitivity"></div>
+        </article>
+
+        <article class="card">
+          <header class="card-head">
+            <h3>Meet the crowd</h3>
+            <span class="hint">every persona thinks out loud</span>
+            <button id="shuffle" class="link-btn">shuffle</button>
+          </header>
+          <div id="persona-list" class="persona-list"></div>
+          <div id="persona-detail" class="persona-detail"></div>
+        </article>
+
+        <footer class="foot">
+          Synthetic personas are simulated, not real people. Numbers are illustrative outputs of a transparent, tunable behavioural model.
+        </footer>
+      </section>
+    </main>
+
+    <script type="module" src="web/app.js"></script>
+  </body>
+</html>

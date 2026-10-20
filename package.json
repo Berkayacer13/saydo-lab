@@ -1,0 +1,19 @@
+{
+  "name": "saydo-lab",
+  "version": "1.0.0",
+  "description": "Synthetic crowds that reveal the gap between what people say and what they actually do.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "saydo": "cli/saydo.js"
+  },
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "test": "node --test test/*.test.js",
+    "sim": "node cli/saydo.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["simulation", "agent-based-model", "behavioral-economics", "synthetic-personas", "conversion", "ab-testing"]
+}
